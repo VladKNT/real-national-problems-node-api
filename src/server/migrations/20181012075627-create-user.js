@@ -14,7 +14,7 @@ module.exports = {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [4, 16]
+          len: [2, 16]
         },
       },
       email: {
@@ -31,7 +31,7 @@ module.exports = {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [7, 42],
+          len: [8, 32],
         },
       },
       role: {

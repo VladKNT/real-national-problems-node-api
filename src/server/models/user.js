@@ -8,7 +8,7 @@ const user = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [4, 16]
+        len: [2, 16]
       },
     },
     email: {
@@ -25,7 +25,7 @@ const user = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [7, 42],
+        len: [8, 32],
       },
     },
     role: {
@@ -35,7 +35,10 @@ const user = (sequelize, DataTypes) => {
   }, {});
 
   User.associate = function(models) {
-    // associations can be defined here
+    User.hasOne(models.UserProfile, {
+      foreignKey: 'fk_user_id',
+      as: 'userProfile'
+    })
   };
 
   User.findByLogin = async (login) => {
