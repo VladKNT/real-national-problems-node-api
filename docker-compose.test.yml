@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  web-test:
+    build: .
+    environment:
+      NODE_ENV: test
+      SECRET: gheregrthwewrbpoerje.4361147.5eh3rs
+    volumes:
+    - "./:/real-national-problems-node-api//"
+    ports:
+    - "3000:3000"
+    links:
+    - "db-test"
+
+  db-test:
+    image: postgres:10
+    environment:
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_USER=postgres
+    - POSTGRES_DB=rnp-test
+    ports:
+    - "5432:5432"

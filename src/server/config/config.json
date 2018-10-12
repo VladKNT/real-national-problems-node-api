@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "postgres",
+    "database": "rnp-dev",
+    "host": "db-dev",
+    "dialect": "postgres",
+    "operatorsAliases": "Op"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "postgres",
+    "database": "rnp-test",
+    "host": "db-test",
+    "dialect": "postgres",
+    "operatorsAliases": "Op"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "postgres",
+    "database": "rnp-prod",
+    "host": "db-prod",
+    "dialect": "postgres",
+    "operatorsAliases": "Op"
+  }
+}

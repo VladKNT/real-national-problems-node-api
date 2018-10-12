@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+  web-dev:
+    build:
+      context: .
+    environment:
+      NODE_ENV: development
+      SECRET: gheregrthwewrbpoerje.4361147.5eh3rs
+    volumes:
+    - "./:/real-national-problems-node-api/"
+    ports:
+    - "3000:3000"
+    links:
+    - "db-dev"
+
+  db-dev:
+    image: postgres:10
+    environment:
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_USER=postgres
+    - POSTGRES_DB=rnp-dev
+    ports:
+    - "5432:5432"
