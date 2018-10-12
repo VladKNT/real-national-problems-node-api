@@ -21,7 +21,7 @@ const userProfile = (sequelize, DataTypes) => {
   }, {});
   UserProfile.associate = function(models) {
     UserProfile.belongsTo(models.User, {
-      foreignKey: 'fk_user_id',
+      foreignKey: 'userId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     })

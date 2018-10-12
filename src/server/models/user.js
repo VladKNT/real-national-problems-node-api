@@ -36,7 +36,7 @@ const user = (sequelize, DataTypes) => {
 
   User.associate = function(models) {
     User.hasOne(models.UserProfile, {
-      foreignKey: 'fk_user_id',
+      foreignKey: 'userId',
       as: 'userProfile'
     })
   };

@@ -81,5 +81,14 @@ export default {
         }
       }
     )
+  },
+
+  //Todo: remove this query and added include with optimization to "users"
+  User: {
+    userProfile: async ({ id }, args, { models }) => {
+      const userProfile = await models.UserProfile.findOne({ where: { userId: id} });
+
+      return userProfile;
+    }
   }
 }

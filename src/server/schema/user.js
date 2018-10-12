@@ -6,6 +6,7 @@ export default gql `
     username: String!
     email: String!
     role: String!
+    userProfile: UserProfile
   }
   
   type Token {
@@ -22,5 +23,4 @@ export default gql `
     updateUser(id: ID!, username: String, email: String): User!
     deleteUser(id: ID!): Boolean!
   }
-
 `;
