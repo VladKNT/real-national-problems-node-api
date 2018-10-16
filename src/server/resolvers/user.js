@@ -23,9 +23,10 @@ export default {
   },
 
   Mutation: {
-    signUp: async (parent, args, { models, secret }) => {
+    signUp: async (parent, { email, username, password, first_name, last_name }, { models, secret }) => {
       try {
-        const user = await models.User.create(args);
+        const user = await models.User.create({ email, username, password });
+        await models.UserProfile.create({ userId: user.id, first_name, last_name });
         return { token: createToken(user, secret, '14d') };
       } catch (error) {
         throw new Error(error);
@@ -83,12 +84,13 @@ export default {
     )
   },
 
-  //Todo: remove this query and added include with optimization to "users"
   User: {
-    userProfile: async ({ id }, args, { models }) => {
-      const userProfile = await models.UserProfile.findOne({ where: { userId: id} });
-
-      return userProfile;
+    userProfile: async ({ id }, args, { loaders }) => {
+      try {
+        return await loaders.userProfile.load(id);
+      } catch (error) {
+        throw new Error(error);
+      }
     }
   }
 }

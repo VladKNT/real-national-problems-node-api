@@ -3,10 +3,12 @@ import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import http from 'http';
 import jwt from 'jsonwebtoken';
 import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
+import DataLoader from 'dataloader';
 
 const typeDefs = mergeTypes(fileLoader('/real-national-problems-node-api/src/server/schema'));
 const resolvers = mergeResolvers(fileLoader('/real-national-problems-node-api/src/server/resolvers'));
 import models from "./server/models";
+import loaders from './server/loaders';
 
 const app = express();
 
@@ -33,6 +35,9 @@ const server = new ApolloServer({
     return {
       models,
       currentUser,
+      loaders: {
+        userProfile: new DataLoader((keys) => loaders.userProfile.batchUserProfiles(keys, models))
+      },
       secret: process.env.SECRET
     };
   },
