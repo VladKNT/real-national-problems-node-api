@@ -1,10 +1,11 @@
 import express from 'express';
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import http from 'http';
-import jwt from 'jsonwebtoken';
 import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 import DataLoader from 'dataloader';
+import { JwtService } from "./server/services/auth";
 
+import tokenConf from './server/config/token';
 const typeDefs = mergeTypes(fileLoader('/real-national-problems-node-api/src/server/schema'));
 const resolvers = mergeResolvers(fileLoader('/real-national-problems-node-api/src/server/resolvers'));
 import models from "./server/models";
@@ -17,7 +18,7 @@ const getCurrentUser = async (req) => {
 
   if (token) {
     try {
-      return await jwt.verify(token, process.env.SECRET);
+      return await JwtService.verify(token, tokenConf.access.secret);
     } catch (e) {
       throw new AuthenticationError(
         'Your session expired. Sign in again.',
@@ -38,7 +39,6 @@ const server = new ApolloServer({
       loaders: {
         userProfile: new DataLoader((keys) => loaders.userProfile.batchUserProfiles(keys, models))
       },
-      secret: process.env.SECRET
     };
   },
   playground: {

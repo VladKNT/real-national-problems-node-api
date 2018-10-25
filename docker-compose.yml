@@ -6,7 +6,10 @@ services:
       context: .
     environment:
       NODE_ENV: development
-      SECRET: gheregrthwewrbpoerje.4361147.5eh3rs
+      TOKEN_ACCESS_SECRET: gheregrthwewrbpoerje.4361147.5eh3rs
+      TOKEN_REFRESH_SECRET: dfheioliorttymtrfttj.5023911.056ttw
+      TOKEN_ACCESS_EXP: 30m
+      TOKEN_REFRESH_EXP: 14d
     volumes:
     - "./:/real-national-problems-node-api/"
     ports:

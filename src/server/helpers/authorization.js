@@ -14,7 +14,7 @@ export const isAdmin = combineResolvers(
 
 export const isOwner = combineResolvers(
   isAuthenticated,
-  (parent, { id }, { currentUser }) => (
-    id == currentUser.id ? skip : new ForbiddenError('Not authorized as owner.')
+  (parent, { sub }, { currentUser }) => (
+    sub == currentUser.id ? skip : new ForbiddenError('Not authorized as owner.')
   )
 );

@@ -9,8 +9,9 @@ export default gql `
     userProfile: UserProfile
   }
   
-  type Token {
-    token: String!
+  type Tokens {
+    accessToken: String!
+    refreshToken: String!
   }
   
   type Query {
@@ -18,8 +19,9 @@ export default gql `
   }
   
   type Mutation {
-    signUp(username: String!, email: String!, password: String!, first_name: String!, last_name: String!): Token!
-    signIn(login: String!, password: String!): Token!
+    signUp(username: String!, email: String!, password: String!, first_name: String!, last_name: String!): Tokens!
+    signIn(login: String!, password: String!): Tokens!
+    refreshToken(token: String): Tokens!
     updateUser(id: ID!, username: String, email: String): User!
     deleteUser(id: ID!): Boolean!
   }

@@ -1,33 +1,20 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('UserProfiles', {
+    return queryInterface.createTable('RefreshTokens', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      first_name: {
-        type: Sequelize.STRING(32),
+      token: {
+        unique: true,
+        allowNull: false,
         validate: {
-          notEmpty: true,
-          len: [2, 32],
+          notEmpty: true
         },
-      },
-      last_name: {
-        type: Sequelize.STRING(32),
-        validate: {
-          notEmpty: true,
-          len: [2, 32],
-        },
-      },
-      profile_photo: {
-        type: Sequelize.STRING,
-        validate: {
-          notEmpty: true,
-          len: [2, 32],
-        },
+        type: Sequelize.STRING(512)
       },
       createdAt: {
         allowNull: false,
@@ -50,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('UserProfiles');
+    return queryInterface.dropTable('RefreshTokens');
   }
 };

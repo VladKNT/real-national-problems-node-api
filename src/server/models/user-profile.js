@@ -2,14 +2,14 @@
 const userProfile = (sequelize, DataTypes) => {
   const UserProfile = sequelize.define('UserProfile', {
     first_name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(32),
       validate: {
         notEmpty: true,
         len: [2, 32],
       },
     },
     last_name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(32),
       validate: {
         notEmpty: true,
         len: [2, 32],

@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true
       },
       username: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(16),
         unique: true,
         allowNull: false,
         validate: {
@@ -18,7 +18,7 @@ module.exports = {
         },
       },
       email: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(32),
         unique: true,
         allowNull: false,
         validate: {
@@ -35,7 +35,7 @@ module.exports = {
         },
       },
       role: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(16),
         defaultValue: 'USER'
       },
       createdAt: {

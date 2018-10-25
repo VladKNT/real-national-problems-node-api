@@ -1,12 +1,10 @@
-import jwt from 'jsonwebtoken';
 import { AuthenticationError, UserInputError } from 'apollo-server';
 import { combineResolvers } from 'graphql-resolvers';
-import {isAuthenticated, isAdmin, isOwner} from '../helpers/authorization';
-
-const createToken = async (user, secret, expiresIn) => {
-  const { id, email, username, role } = user;
-  return await jwt.sign({ id, email, username, role }, secret, { expiresIn });
-};
+import _ from 'lodash';
+import { TokenService } from '../services/auth';
+import { JwtService } from "../services/auth";
+import { isAuthenticated, isAdmin, isOwner } from '../helpers/authorization';
+import tokenConf from '../config/token';
 
 export default {
   Query: {
@@ -23,20 +21,24 @@ export default {
   },
 
   Mutation: {
-    signUp: async (parent, { email, username, password, first_name, last_name }, { models, secret }) => {
+    signUp: async (parent, { email, username, password, first_name, last_name }, { models }) => {
       try {
         const user = await models.User.create({ email, username, password });
         await models.UserProfile.create({ userId: user.id, first_name, last_name });
-        return { token: createToken(user, secret, '14d') };
+
+        const accessToken = await TokenService.createToken(user, 'access');
+        const refreshToken = await TokenService.createToken(user, 'refresh');
+        await models.RefreshToken.create({ userId: user.id, token: refreshToken });
+
+        return { accessToken, refreshToken };
       } catch (error) {
         throw new Error(error);
       }
     },
 
-    signIn: async (parent, { login, password }, { models, secret }) => {
+    signIn: async (parent, { login, password }, { models }) => {
       try {
         const user = await models.User.findByLogin(login);
-        console.info(user);
 
         if (!user) {
           throw new UserInputError('No user found with this login credentials.');
@@ -48,11 +50,50 @@ export default {
           throw new AuthenticationError('Invalid password.');
         }
 
-        return { token: createToken(user, secret, '30d') };
+        const accessToken = await TokenService.createToken(user, 'access');
+        const refreshToken = await TokenService.createToken(user, 'refresh');
+        await models.RefreshToken.create({ userId: user.id, token: refreshToken });
+
+        return { accessToken, refreshToken };
       } catch (error) {
         throw new Error(error);
       }
     },
+
+    refreshToken: async (parent, { token }, { models }) => {
+      try {
+        const { secret, type } = tokenConf.refresh;
+        const decodedToken = await JwtService.verify(token, secret);
+        const { email, username, role, tokenType, sub: userId } = decodedToken;
+        const user = {
+          id: userId,
+          email,
+          username,
+          role
+        };
+
+        if (type !== tokenType) {
+          throw new Error('Invalid token type.');
+        }
+
+        const oldToken = await models.RefreshToken.findOne({ where: { userId, token} });
+
+        if (_.isNull(oldToken)) {
+          models.RefreshToken.destroy({ where: { userId } });
+          throw new Error('Provided refresh token doesn\'t exist.');
+        }
+
+        const accessToken = await TokenService.createToken(user, 'access');
+        const refreshToken = await TokenService.createToken(user, 'refresh');
+
+        await models.RefreshToken.update({ token: refreshToken }, { where: { userId, token } });
+
+        return({ accessToken, refreshToken })
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
 
     updateUser: combineResolvers(
       isOwner,

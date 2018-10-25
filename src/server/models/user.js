@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
+import refreshToken from "./refresh-token";
 
 const user = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     username: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(16),
       unique: true,
       allowNull: false,
       validate: {
@@ -12,7 +13,7 @@ const user = (sequelize, DataTypes) => {
       },
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(32),
       unique: true,
       allowNull: false,
       validate: {
@@ -29,7 +30,7 @@ const user = (sequelize, DataTypes) => {
       },
     },
     role: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(16),
       defaultValue: 'USER'
     },
   }, {});
@@ -38,6 +39,11 @@ const user = (sequelize, DataTypes) => {
     User.hasOne(models.UserProfile, {
       foreignKey: 'userId',
       as: 'userProfile'
+    });
+
+    User.hasMany(models.RefreshToken, {
+      foreignKey: 'userId',
+      as: 'refreshTokens'
     })
   };
 
