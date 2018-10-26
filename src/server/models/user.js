@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import refreshToken from "./refresh-token";
 
 const user = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -47,9 +46,13 @@ const user = (sequelize, DataTypes) => {
     })
   };
 
-  User.findByLogin = async (login) => {
+  User.findByLogin = async (login, models) => {
     let user = await User.findOne({
-      where: { username: login }
+      where: { username: login },
+      include: [{
+        model: models.RefreshToken,
+        as: 'refreshTokens'
+      }]
     });
 
     if (!user) {

@@ -26,11 +26,10 @@ export default {
         const user = await models.User.create({ email, username, password });
         await models.UserProfile.create({ userId: user.id, first_name, last_name });
 
-        const accessToken = await TokenService.createToken(user, 'access');
-        const refreshToken = await TokenService.createToken(user, 'refresh');
-        await models.RefreshToken.create({ userId: user.id, token: refreshToken });
+        const tokenPair = await TokenService.generateTokenPair(user);
+        await models.RefreshToken.create({ userId: user.id, token: tokenPair.refreshToken });
 
-        return { accessToken, refreshToken };
+        return tokenPair;
       } catch (error) {
         throw new Error(error);
       }
@@ -38,7 +37,8 @@ export default {
 
     signIn: async (parent, { login, password }, { models }) => {
       try {
-        const user = await models.User.findByLogin(login);
+        const user = await models.User.findByLogin(login, models);
+        console.info(user);
 
         if (!user) {
           throw new UserInputError('No user found with this login credentials.');
@@ -50,16 +50,16 @@ export default {
           throw new AuthenticationError('Invalid password.');
         }
 
-        const accessToken = await TokenService.createToken(user, 'access');
-        const refreshToken = await TokenService.createToken(user, 'refresh');
-        await models.RefreshToken.create({ userId: user.id, token: refreshToken });
+        const tokenPair = await TokenService.generateTokenPair(user);
+        await models.RefreshToken.create({ userId: user.id, token: tokenPair.refreshToken });
 
-        return { accessToken, refreshToken };
+        return tokenPair;
       } catch (error) {
         throw new Error(error);
       }
     },
 
+    // Todo: delete token if it expired
     refreshToken: async (parent, { token }, { models }) => {
       try {
         const { secret, type } = tokenConf.refresh;
@@ -83,12 +83,10 @@ export default {
           throw new Error('Provided refresh token doesn\'t exist.');
         }
 
-        const accessToken = await TokenService.createToken(user, 'access');
-        const refreshToken = await TokenService.createToken(user, 'refresh');
+        const tokenPair = await TokenService.generateTokenPair(user);
+        await models.RefreshToken.update({ token: tokenPair.refreshToken }, { where: { userId, token } });
 
-        await models.RefreshToken.update({ token: refreshToken }, { where: { userId, token } });
-
-        return({ accessToken, refreshToken })
+        return tokenPair;
       } catch (error) {
         throw new Error(error);
       }
