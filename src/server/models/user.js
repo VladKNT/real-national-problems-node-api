@@ -43,6 +43,25 @@ const user = (sequelize, DataTypes) => {
     User.hasMany(models.RefreshToken, {
       foreignKey: 'userId',
       as: 'refreshTokens'
+    });
+
+    User.hasMany(models.Message, {
+      foreignKey: 'creatorId',
+      as: 'messages'
+    });
+
+    User.hasMany(models.Message, {
+      foreignKey: 'creatorId',
+      as: 'ownChats'
+    });
+
+    User.belongsToMany(models.Chat, {
+      foreignKey: 'userId',
+      as: 'chats',
+      through: 'UserChats',
+
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
     })
   };
 

@@ -21,7 +21,7 @@ export default gql `
   type Mutation {
     signUp(username: String!, email: String!, password: String!, first_name: String!, last_name: String!): Tokens!
     signIn(login: String!, password: String!): Tokens!
-    refreshToken(token: String): Tokens!
+    refreshToken(token: String!): Tokens!
     updateUser(id: ID!, username: String, email: String): User!
     deleteUser(id: ID!): Boolean!
   }
