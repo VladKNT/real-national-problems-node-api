@@ -13,6 +13,10 @@ const message = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    deletedForAll: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     edited: {
       type: DataTypes.BOOLEAN,
       defaultValue: false

@@ -38,7 +38,6 @@ export default {
     signIn: async (parent, { login, password }, { models }) => {
       try {
         const user = await models.User.findByLogin(login, models);
-        console.info(user);
 
         if (!user) {
           throw new UserInputError('No user found with this login credentials.');

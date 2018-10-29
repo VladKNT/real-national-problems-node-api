@@ -6,6 +6,7 @@ export default gql `
     message: String!
     owner: User!
     deleted: Boolean!
+    deletedForAll: Boolean!
     edited: Boolean!
     createdAt: String!
     updatedAt: String!
@@ -16,6 +17,8 @@ export default gql `
   }
   
   type Mutation {
-    sendMessage(message: String!, chatId: ID!, creatorId: ID!): Message!
+    sendMessage(message: String!, chatId: ID!): Message!
+    updateMessage(id: ID!, message: String!): Message!
+    deleteMessage(id: ID!, deletedForAll: Boolean): Boolean!
   }
 `;

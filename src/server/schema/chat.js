@@ -6,7 +6,8 @@ export default gql `
     name: String!
     description: String!
     icon: String!
-    lastMessage: Message!
+    lastMessage: Message
+    members: [User!]!
     createdAt: String!
     updatedAt: String!
     creatorId: ID!
@@ -14,11 +15,13 @@ export default gql `
   
   type Query {
     chat(id: ID!): Chat!
-    chats(userId: ID!): [Chat!]!
+    userChats: [Chat!]!
   }
   
   type Mutation {
-    createChat(name: String, description: String, creatorId: ID, members: [ID]!): Chat!
+    createChat(name: String!, description: String, members: [ID]!): Chat!
+    createPrivateChat(recipientId: ID!): Chat!
     updateChat(id: ID!, name: String, description: String): Chat!
+    deleteChat(id: ID!): Boolean!
   }
 `;

@@ -12,6 +12,10 @@ const chat = (sequelize, DataTypes) => {
     },
     creatorId: {
       type: DataTypes.INTEGER
+    },
+    private: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {});
   Chat.associate = function(models) {
@@ -20,8 +24,14 @@ const chat = (sequelize, DataTypes) => {
       as: 'messages'
     });
 
+    Chat.hasMany(models.UserChat, {
+      foreignKey: 'chatId',
+      as: 'userChatIds'
+    });
+
     Chat.belongsTo(models.User, {
       foreignKey: 'creatorId',
+
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });

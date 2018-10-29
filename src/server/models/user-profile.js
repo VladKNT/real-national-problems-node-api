@@ -1,4 +1,3 @@
-'use strict';
 const userProfile = (sequelize, DataTypes) => {
   const UserProfile = sequelize.define('UserProfile', {
     first_name: {

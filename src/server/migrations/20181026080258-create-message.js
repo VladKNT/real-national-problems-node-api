@@ -19,6 +19,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+      deletedForAll: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       edited: {
         type: Sequelize.BOOLEAN,
         defaultValue: false

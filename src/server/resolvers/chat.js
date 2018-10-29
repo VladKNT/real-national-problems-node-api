@@ -1,24 +1,87 @@
+import { combineResolvers } from 'graphql-resolvers';
+import { isAuthenticated, isChatCreator } from '../helpers/authorization';
+
 export default {
   Query: {
-    chat: async (parent, { id }, { models }) => {
+    chat: combineResolvers(
+      isAuthenticated,
+      async (parent, { id }, { models, currentUser }) => {
       try {
-        return await models.Chat.findById(id);
+        const { sub: userId } = currentUser;
+
+        return await models.Chat.findById(id, {
+          include: [{
+            model: models.UserChat,
+            as: 'userChatIds',
+            where: { userId}
+          }, {
+            model: models.User,
+            as: 'members',
+          }],
+        });
       } catch (error) {
         throw new Error(error);
       }
-    }
+    }),
+
+    userChats: combineResolvers(
+      isAuthenticated,
+      async (parent, args, { models, currentUser }) => {
+      try {
+        const { sub: userId } = currentUser;
+
+        return await models.Chat.findAll({
+          include: [{
+            model: models.UserChat,
+            as: 'userChatIds',
+            where: { userId}
+          }, {
+            model: models.User,
+            as: 'members',
+          }],
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
+    })
   },
 
   Mutation: {
-    createChat: async (parent, args, { models }) => {
+    createChat: combineResolvers(
+      isAuthenticated,
+      async (parent, args, { models, currentUser }) => {
       try {
-        return await models.Chat.create(args);
+        const { sub: creatorId } = currentUser;
+        args.creatorId = creatorId;
+        args.members.push(creatorId);
+
+        const chat = await models.Chat.create(args);
+        chat.setMembers(args.members);
+
+        return chat;
       } catch (error) {
         throw new Error(error);
       }
-    },
+    }),
 
-    updateChat: async (parent, args, { models }) => {
+    createPrivateChat: combineResolvers(
+      isAuthenticated,
+      async (parent, { recipientId }, {models, currentUser }) => {
+        try {
+          const { sub: creatorId } = currentUser;
+
+          const chat = await models.Chat.create({ private: true });
+          chat.setMembers([ creatorId, recipientId ]);
+
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+    ),
+
+    updateChat: combineResolvers(
+      isChatCreator,
+      async (parent, args, { models }) => {
       try {
         const chat = await models.Chat.update(args, {
           fields: Object.keys(args),
@@ -31,8 +94,19 @@ export default {
       } catch (error) {
         throw new Error(error);
       }
+    }),
 
-    }
+    deleteChat: combineResolvers(
+      isChatCreator,
+      async (parent, { id }, { models }) => {
+      try {
+        await models.Chat.destroy({ where: { id } });
+
+        return true;
+      } catch (error) {
+        throw new Error(error);
+      }
+    })
   },
 
   Chat: {
@@ -47,4 +121,4 @@ export default {
       }
     }
   }
-}
+};
