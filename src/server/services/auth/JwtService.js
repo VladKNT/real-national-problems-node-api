@@ -16,4 +16,12 @@ export default class JwtService {
       throw new Error(error);
     }
   }
+
+  static async decode(token) {
+    try {
+      return await jwt.decode(token);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 };

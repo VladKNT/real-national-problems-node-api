@@ -8,11 +8,22 @@ import tokenConf from '../config/token';
 
 export default {
   Query: {
+    getUser: combineResolvers(
+      isAuthenticated,
+      async (parent, args, { models, currentUser }) => {
+        try {
+          return await models.User.findById(currentUser.sub);
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+    ),
+
     users: combineResolvers(
       isAuthenticated,
       async (parent, args, { models }) => {
         try {
-          return models.User.findAll();
+          return await models.User.findAll();
         } catch (error) {
           throw new Error(error);
         }
@@ -21,10 +32,10 @@ export default {
   },
 
   Mutation: {
-    signUp: async (parent, { email, username, password, first_name, last_name }, { models }) => {
+    signUp: async (parent, { email, username, password, firstName, lastName }, { models }) => {
       try {
         const user = await models.User.create({ email, username, password });
-        await models.UserProfile.create({ userId: user.id, first_name, last_name });
+        await models.UserProfile.create({ userId: user.id, firstName, lastName });
 
         const tokenPair = await TokenService.generateTokenPair(user);
         await models.RefreshToken.create({ userId: user.id, token: tokenPair.refreshToken });
@@ -58,12 +69,13 @@ export default {
       }
     },
 
-    // Todo: delete token if it expired
     refreshToken: async (parent, { token }, { models }) => {
       try {
         const { secret, type } = tokenConf.refresh;
-        const decodedToken = await JwtService.verify(token, secret);
-        const { email, username, role, tokenType, sub: userId } = decodedToken;
+        const decodedToken = await await JwtService.decode(token);
+        const currentData = new Date();
+
+        const { email, username, role, tokenType, sub: userId, exp } = decodedToken;
         const user = {
           id: userId,
           email,
@@ -71,10 +83,21 @@ export default {
           role
         };
 
+        const removeRefreshToken = async () => {
+          await models.RefreshToken.destroy({ where: { userId} });
+        };
+
+        if (exp < currentData.getTime() / 1000) {
+          await removeRefreshToken();
+          throw new Error('Token is expired.');
+        }
+
         if (type !== tokenType) {
+          await removeRefreshToken();
           throw new Error('Invalid token type.');
         }
 
+        await JwtService.verify(token, secret);
         const oldToken = await models.RefreshToken.findOne({ where: { userId, token} });
 
         if (_.isNull(oldToken)) {

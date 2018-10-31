@@ -1,20 +1,20 @@
 const userProfile = (sequelize, DataTypes) => {
   const UserProfile = sequelize.define('UserProfile', {
-    first_name: {
+    firstName: {
       type: DataTypes.STRING(32),
       validate: {
         notEmpty: true,
         len: [2, 32],
       },
     },
-    last_name: {
+    lastName: {
       type: DataTypes.STRING(32),
       validate: {
         notEmpty: true,
         len: [2, 32],
       },
     },
-    profile_photo: {
+    profilePhoto: {
       type: DataTypes.STRING
     },
   }, {});

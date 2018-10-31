@@ -8,21 +8,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      first_name: {
+      firstName: {
         type: Sequelize.STRING(32),
         validate: {
           notEmpty: true,
           len: [2, 32],
         },
       },
-      last_name: {
+      lastName: {
         type: Sequelize.STRING(32),
         validate: {
           notEmpty: true,
           len: [2, 32],
         },
       },
-      profile_photo: {
+      profilePhoto: {
         type: Sequelize.STRING,
         validate: {
           notEmpty: true,
