@@ -126,6 +126,13 @@ export default {
             where: { id: args.id }
           });
 
+          await models.UserProfile.update(args, {
+            fields: Object.keys(args),
+            returning: true,
+            plain: true,
+            where: { userId: args.id }
+          });
+
           return user[1];
         } catch (error) {
           throw new Error(error);

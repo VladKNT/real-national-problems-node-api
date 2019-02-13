@@ -2,6 +2,7 @@ const userProfile = (sequelize, DataTypes) => {
   const UserProfile = sequelize.define('UserProfile', {
     firstName: {
       type: DataTypes.STRING(32),
+      allowNull: true,
       validate: {
         notEmpty: true,
         len: [2, 32],
@@ -9,13 +10,19 @@ const userProfile = (sequelize, DataTypes) => {
     },
     lastName: {
       type: DataTypes.STRING(32),
+      allowNull: true,
       validate: {
         notEmpty: true,
         len: [2, 32],
       },
     },
+    bio: {
+      type: DataTypes.STRING(128),
+      allowNull: true
+    },
     profilePhoto: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: true
     },
   }, {});
   UserProfile.associate = function(models) {

@@ -10,6 +10,7 @@ module.exports = {
       },
       firstName: {
         type: Sequelize.STRING(32),
+        allowNull: true,
         validate: {
           notEmpty: true,
           len: [2, 32],
@@ -17,17 +18,19 @@ module.exports = {
       },
       lastName: {
         type: Sequelize.STRING(32),
+        allowNull: true,
         validate: {
           notEmpty: true,
           len: [2, 32],
         },
       },
+      bio: {
+        type: Sequelize.STRING(128),
+        allowNull: true,
+      },
       profilePhoto: {
         type: Sequelize.STRING,
-        validate: {
-          notEmpty: true,
-          len: [2, 32],
-        },
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
