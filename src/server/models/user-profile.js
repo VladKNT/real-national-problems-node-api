@@ -21,7 +21,7 @@ const userProfile = (sequelize, DataTypes) => {
       allowNull: true
     },
     profilePhoto: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(128),
       allowNull: true
     },
   }, {});

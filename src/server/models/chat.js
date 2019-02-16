@@ -1,4 +1,3 @@
-'use strict';
 const chat = (sequelize, DataTypes) => {
   const Chat = sequelize.define('Chat', {
     name: {

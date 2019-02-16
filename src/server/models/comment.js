@@ -1,7 +1,7 @@
 'use strict';
-const message = (sequelize, DataTypes) => {
-  const Message = sequelize.define('Message', {
-    message: {
+const comment = (sequelize, DataTypes) => {
+  const Comment = sequelize.define('Comment', {
+    comment: {
       type: DataTypes.STRING(255),
       validate: {
         notEmpty: true,
@@ -13,28 +13,30 @@ const message = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
-    deletedForAll: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    },
     edited: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    },
+    }
   }, {});
-  Message.associate = function(models) {
-    Message.belongsTo(models.User, {
+  Comment.associate = function(models) {
+    Comment.hasMany(models.SubComment, {
+      foreignKey: 'commentId',
+      as: 'subComments'
+    });
+
+    Comment.belongsTo(models.User, {
       foreignKey: 'creatorId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });
-    Message.belongsTo(models.Chat, {
-      foreignKey: 'chatId',
+
+    Comment.belongsTo(models.Event, {
+      foreignKey: 'eventId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
-    })
+    });
   };
-  return Message;
+  return Comment;
 };
 
-export default message;
+export default comment;

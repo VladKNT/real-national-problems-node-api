@@ -60,6 +60,11 @@ const user = (sequelize, DataTypes) => {
       as: 'ownChats'
     });
 
+    User.hasMany(models.Event, {
+      foreignKey: 'creatorId',
+      as: 'ownEvents'
+    });
+
     User.belongsToMany(models.Chat, {
       foreignKey: 'userId',
       as: 'chats',
@@ -67,7 +72,25 @@ const user = (sequelize, DataTypes) => {
 
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
-    })
+    });
+
+    User.belongsToMany(models.Event, {
+      foreignKey: 'userId',
+      as: 'events',
+      through: 'UserEvents',
+
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    });
+
+    User.belongsToMany(models.SubComment, {
+      foreignKey: 'userId',
+      as: 'replies',
+      through: 'UserSubComments',
+
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    });
   };
 
   User.findByLogin = async (login, models) => {

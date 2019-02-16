@@ -1,25 +1,21 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Messages', {
+    return queryInterface.createTable('SubComments', {
       id: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        type: Sequelize.INTEGER
       },
-      message: {
-        type: Sequelize.STRING(255),
+      subComment: {
+        type: Sequelize.STRING,
         validate: {
           notEmpty: true,
           len: [1, 255],
         }
       },
       deleted: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      deletedForAll: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
@@ -45,19 +41,19 @@ module.exports = {
           as: 'creatorId'
         }
       },
-      chatId: {
+      commentId: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         references: {
-          model: 'Chats',
+          model: 'Comments',
           key: 'id',
-          as: 'chatId'
+          as: 'eventId'
         }
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Messages');
+    return queryInterface.dropTable('SubComments');
   }
 };
