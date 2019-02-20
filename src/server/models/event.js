@@ -54,8 +54,14 @@ const event = (sequelize, DataTypes) => {
       as: 'comments'
     });
 
+    Event.hasMany(models.UserEvent, {
+      foreignKey: 'eventId',
+      as: 'userEventIds',
+    });
+
     Event.belongsTo(models.User, {
       foreignKey: 'creatorId',
+      as: 'creator',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });

@@ -13,7 +13,7 @@ export default {
           include: [{
             model: models.UserChat,
             as: 'userChatIds',
-            where: { userId}
+            where: { userId }
           }, {
             model: models.User,
             as: 'members',

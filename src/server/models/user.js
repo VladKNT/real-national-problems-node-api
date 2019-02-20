@@ -55,6 +55,11 @@ const user = (sequelize, DataTypes) => {
       as: 'userChatIds',
     });
 
+    User.hasMany(models.UserEvent, {
+      foreignKey: 'userId',
+      as: 'userEventIds',
+    });
+
     User.hasMany(models.Message, {
       foreignKey: 'creatorId',
       as: 'ownChats'
