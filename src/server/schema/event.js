@@ -10,7 +10,7 @@ export default gql `
     longitude: Float!
     dateStart: String!
     dateEnd: String!
-    participants: [User!]!
+    participants: [User!]
     creator: User!
     createdAt: String!
     updatedAt: String!

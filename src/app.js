@@ -37,7 +37,8 @@ const server = new ApolloServer({
       models,
       currentUser,
       loaders: {
-        userProfile: new DataLoader((keys) => loaders.userProfile.batchUserProfiles(keys, models))
+        userProfile: new DataLoader((keys) => loaders.userProfile.batchUserProfiles(keys, models)),
+        eventCreators: new DataLoader((keys) => loaders.event.batchCreators(keys, models))
       },
     };
   },

@@ -9,16 +9,7 @@ export default {
         try {
           const { sub: userId } = currentUser;
 
-          return await models.Event.findById(id, {
-            include: [{
-              model: models.UserEvent,
-              as: 'userEventIds',
-              where: { userId }
-            }, {
-              model: models.User,
-              as: 'participants',
-            }]
-          });
+          return await models.Event.findById(id);
         } catch (error) {
           throw new Error(error);
         }
@@ -30,19 +21,7 @@ export default {
         try {
           const { sub: userId } = currentUser;
 
-          return await models.Event.findAll({
-            include: [{
-              model: models.UserEvent,
-              as: 'userEventIds',
-              where: { userId }
-            }, {
-              model: models.User,
-              as: 'participants',
-            }, {
-              model: models.User,
-              as: 'creator'
-            }]
-          });
+          return await models.Event.findAll();
         }  catch (error) {
           throw new Error(error);
         }
@@ -60,14 +39,36 @@ export default {
           args.participants.push(creatorId);
 
           const event = await models.Event.create(args);
-          event.setParticipants(args.participants);
-
-          console.info(event);
+          await event.setParticipants(args.participants);
 
           return event;
         } catch (error) {
           throw new Error(error);
         }
       }),
+  },
+
+  Event: {
+    creator: async ({ creatorId }, args, { models, loaders }) => {
+      try {
+        return loaders.eventCreators.load(creatorId);
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
+    participants: async ({ id }, args, { models }) => {
+      try {
+        return await models.User.findAll({
+          include: [{
+            model: models.UserEvent,
+            as: 'userEventIds',
+            where: { eventId: id }
+          }]
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
   }
 };
