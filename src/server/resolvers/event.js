@@ -1,5 +1,6 @@
 import { combineResolvers } from 'graphql-resolvers';
-import { isAuthenticated, isChatCreator } from '../helpers/authorization';
+import { isAuthenticated } from '../helpers/authorization';
+import { uploadImage } from '../helpers/imageUploader';
 
 export default {
   Query: {
@@ -34,7 +35,11 @@ export default {
       isAuthenticated,
       async (parent, args, { models, currentUser }) => {
         try {
+          const photo = args.photo = await uploadImage(await args.imageFile, 'events');
+          args.photo = photo.path;
+
           const { sub: creatorId } = currentUser;
+
           args.creatorId = creatorId;
           args.participants.push(creatorId);
 

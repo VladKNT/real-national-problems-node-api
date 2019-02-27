@@ -27,7 +27,7 @@ export default gql `
       name: String!, 
       description: String!, 
       participants: [ID], 
-      photo: String!, 
+      imageFile: Upload!
       latitude: Float!, 
       longitude: Float!,
       dateStart: String!
