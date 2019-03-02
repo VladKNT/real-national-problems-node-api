@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { TokenService } from '../services/auth';
 import { JwtService } from "../services/auth";
 import { isAuthenticated, isAdmin, isOwner } from '../helpers/authorization';
+import { uploadImage } from '../helpers/imageUploader';
 import tokenConf from '../config/token';
 
 export default {
@@ -119,6 +120,11 @@ export default {
       isOwner,
       async (parent, args, { models }) => {
         try {
+          if (args.imageFile) {
+            const photo = args.photo = await uploadImage(await args.imageFile, 'avatars');
+            args.profilePhoto = photo.path;
+          }
+
           const user = await models.User.update(args, {
             fields: Object.keys(args),
             returning: true,

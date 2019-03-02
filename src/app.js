@@ -51,7 +51,7 @@ const server = new ApolloServer({
   }
 });
 
-app.use('/images', express.static('src/images'));
+app.use('/images', express.static('images'));
 
 server.applyMiddleware({
   app

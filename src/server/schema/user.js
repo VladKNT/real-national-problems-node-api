@@ -23,7 +23,7 @@ export default gql `
     signUp(username: String!, email: String!, password: String!, firstName: String!, lastName: String!): Tokens!
     signIn(login: String!, password: String!): Tokens!
     refreshToken(token: String!): Tokens!
-    updateUser(id: ID!, username: String, email: String, firstName: String, lastName: String, bio: String, profilePhoto: String): User!
+    updateUser(id: ID!, username: String, email: String, firstName: String, lastName: String, bio: String, imageFile: Upload): User!
     deleteUser(id: ID!): Boolean!
   }
 `;
