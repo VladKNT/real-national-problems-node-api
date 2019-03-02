@@ -3,12 +3,12 @@ import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import http from 'http';
 import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 import DataLoader from 'dataloader';
-import { JwtService } from "./server/services/auth";
+import { JwtService } from './server/services/auth';
 
 import tokenConf from './server/config/token';
 const typeDefs = mergeTypes(fileLoader('/real-national-problems-node-api/src/server/schema'));
 const resolvers = mergeResolvers(fileLoader('/real-national-problems-node-api/src/server/resolvers'));
-import models from "./server/models";
+import models from './server/models';
 import loaders from './server/loaders';
 
 const app = express();
@@ -50,6 +50,8 @@ const server = new ApolloServer({
     }
   }
 });
+
+app.use('/images', express.static('src/images'));
 
 server.applyMiddleware({
   app
