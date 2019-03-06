@@ -1,4 +1,5 @@
 import { combineResolvers } from 'graphql-resolvers';
+import pubsub, { EVENTS } from "../subscriptions";
 import { isAuthenticated, isMessageCreator } from '../helpers/authorization';
 import _ from 'lodash';
 
@@ -33,7 +34,13 @@ export default {
           const { sub: creatorId } = currentUser;
           args.creatorId = creatorId;
 
-          return models.Message.create(args);
+          const message = await models.Message.create(args);
+
+          pubsub.publish(EVENTS.MESSAGE.MESSAGE_SENT, {
+            messageSent: message
+          });
+
+          return message;
         } catch (error) {
           throw new Error(error);
         }
@@ -71,5 +78,11 @@ export default {
         return true;
       }
     )
+  },
+
+  Subscription: {
+    messageSent: {
+      subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE.MESSAGE_SENT)
+    }
   }
 }

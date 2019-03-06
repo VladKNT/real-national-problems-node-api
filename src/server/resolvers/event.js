@@ -6,10 +6,8 @@ export default {
   Query: {
     event: combineResolvers(
       isAuthenticated,
-      async (parent, { id }, { models, currentUser }) => {
+      async (parent, { id }, { models }) => {
         try {
-          const { sub: userId } = currentUser;
-
           return await models.Event.findById(id);
         } catch (error) {
           throw new Error(error);
@@ -18,10 +16,8 @@ export default {
 
     allEvents: combineResolvers(
       isAuthenticated,
-      async (parent, args, { models, currentUser }) => {
+      async (parent, args, { models }) => {
         try {
-          const { sub: userId } = currentUser;
-
           return await models.Event.findAll();
         }  catch (error) {
           throw new Error(error);

@@ -21,4 +21,8 @@ export default gql `
     updateMessage(id: ID!, message: String!): Message!
     deleteMessage(id: ID!, deletedForAll: Boolean): Boolean!
   }
+  
+  type Subscription {
+    messageSent: Message!
+  }
 `;

@@ -13,9 +13,7 @@ import loaders from './server/loaders';
 
 const app = express();
 
-const getCurrentUser = async (req) => {
-  const token = req.headers['x-token'];
-
+const getCurrentUser = async (token) => {
   if (token) {
     try {
       return await JwtService.verify(token, tokenConf.access.secret);
@@ -30,8 +28,20 @@ const getCurrentUser = async (req) => {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    const currentUser = await getCurrentUser(req);
+  context: async (data) => {
+    const {
+      req,
+      connection
+    } = data;
+    let token;
+
+    if (req) {
+      token = req.headers['x-token'];
+    } else if (connection) {
+      token = connection.context['x-token']
+    }
+
+    const currentUser = await getCurrentUser(token);
 
     return {
       models,

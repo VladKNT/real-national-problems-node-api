@@ -56,7 +56,7 @@ export default {
         args.members.push(creatorId);
 
         const chat = await models.Chat.create(args);
-        chat.setMembers(args.members);
+        await chat.setMembers(args.members);
 
         return chat;
       } catch (error) {
@@ -71,8 +71,9 @@ export default {
           const { sub: creatorId } = currentUser;
 
           const chat = await models.Chat.create({ private: true });
-          chat.setMembers([ creatorId, recipientId ]);
+          await chat.setMembers([ creatorId, recipientId ]);
 
+          return chat;
         } catch (error) {
           throw new Error(error);
         }
