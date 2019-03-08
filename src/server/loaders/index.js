@@ -1,4 +1,4 @@
 import * as userProfile from './userProfile';
-import * as event from './event';
+import * as common from './common';
 
-export default { userProfile, event };
+export default { userProfile, common };

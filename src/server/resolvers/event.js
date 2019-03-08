@@ -52,7 +52,7 @@ export default {
   Event: {
     creator: async ({ creatorId }, args, { models, loaders }) => {
       try {
-        return loaders.eventCreators.load(creatorId);
+        return loaders.creators.load(creatorId);
       } catch (error) {
         throw new Error(error);
       }

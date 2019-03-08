@@ -1,4 +1,5 @@
 import { combineResolvers } from 'graphql-resolvers';
+import { withFilter } from 'apollo-server';
 import pubsub, { EVENTS } from "../subscriptions";
 import { isAuthenticated, isMessageCreator } from '../helpers/authorization';
 import _ from 'lodash';
@@ -82,7 +83,19 @@ export default {
 
   Subscription: {
     messageSent: {
-      subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE.MESSAGE_SENT)
+      subscribe: withFilter(() => pubsub.asyncIterator(EVENTS.MESSAGE.MESSAGE_SENT), (payload, variables) => {
+        return variables.chatId == payload.messageSent.chatId;
+      }),
     }
+  },
+
+  Message: {
+    owner: async ({ creatorId }, args, { models, loaders }) => {
+      try {
+        return loaders.creators.load(creatorId);
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
   }
 }

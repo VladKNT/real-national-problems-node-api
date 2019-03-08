@@ -4,6 +4,8 @@ export default gql `
   type Message {
     id: ID!
     message: String!
+    chatId: ID!
+    ownerId: ID!
     owner: User!
     deleted: Boolean!
     deletedForAll: Boolean!
@@ -23,6 +25,6 @@ export default gql `
   }
   
   type Subscription {
-    messageSent: Message!
+    messageSent(chatId: ID!): Message!
   }
 `;
