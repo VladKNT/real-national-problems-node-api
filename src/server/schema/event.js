@@ -33,5 +33,6 @@ export default gql `
       dateStart: String!
       dateEnd: String!
     ): Event!
+    follow(id: ID!): Event!
   }
 `;

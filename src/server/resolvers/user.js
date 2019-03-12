@@ -20,6 +20,17 @@ export default {
       }
     ),
 
+    getUserById: combineResolvers(
+      isAuthenticated,
+      async (parent, { id }, { models }) => {
+        try {
+          return await models.User.findById(id);
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+    ),
+
     users: combineResolvers(
       isAuthenticated,
       async (parent, args, { models }) => {

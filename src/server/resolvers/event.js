@@ -1,6 +1,7 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { isAuthenticated } from '../helpers/authorization';
 import { uploadImage } from '../helpers/imageUploader';
+import _ from 'lodash';
 
 export default {
   Query: {
@@ -47,6 +48,36 @@ export default {
           throw new Error(error);
         }
       }),
+
+    follow: combineResolvers(
+      isAuthenticated,
+      async (parent, { id }, { models, currentUser }) => {
+        try {
+          const { sub: userId } = currentUser;
+          const event = await models.Event.findById(id,
+            {
+              include: {
+                model: models.User,
+                as: 'participants',
+              }
+            });
+
+          let { participants } = event;
+          participants = _.map(participants, (participant) => participant.id);
+
+          if (_.includes(participants, parseInt(userId))) {
+            _.remove(participants, (id) => id == userId);
+          } else {
+            participants.push(userId);
+          }
+
+          await event.setParticipants(participants);
+          return event;
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+    )
   },
 
   Event: {

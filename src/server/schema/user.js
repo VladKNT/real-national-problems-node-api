@@ -16,6 +16,7 @@ export default gql `
   
   type Query {
     getUser: User!
+    getUserById(id: ID!): User!
     users: [User!]
   }
   
