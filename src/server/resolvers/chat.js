@@ -120,6 +120,20 @@ export default {
       } catch (error) {
         throw new Error(error);
       }
+    },
+
+    members: async ({ id }, args, { models }) => {
+      try {
+        return await models.User.findAll({
+          include: [{
+            model: models.UserChat,
+            as: 'userChatIds',
+            where: { chatId: id }
+          }]
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
     }
   }
 };

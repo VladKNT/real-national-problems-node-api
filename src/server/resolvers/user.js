@@ -176,6 +176,28 @@ export default {
       } catch (error) {
         throw new Error(error);
       }
+    },
+    //
+    // chats: async ({ id }, args, { loaders }) => {
+    //   try {
+    //     return await loaders.userProfile.load(id);
+    //   } catch (error) {
+    //     throw new Error(error);
+    //   }
+    // }
+
+    chats: async ({ id }, args, { models }) => {
+      try {
+        return await models.Chat.findAll({
+          include: [{
+            model: models.UserChat,
+            as: 'userChatIds',
+            where: { userId: id }
+          }]
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
     }
   }
 }

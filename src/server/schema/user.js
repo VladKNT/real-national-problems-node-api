@@ -7,6 +7,7 @@ export default gql `
     email: String!
     role: String!
     userProfile: UserProfile
+    chats: [Chat]
   }
   
   type Tokens {
