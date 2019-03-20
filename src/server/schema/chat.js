@@ -8,6 +8,7 @@ export default gql `
     icon: String!
     lastMessage: Message
     members: [User!]!
+    private: Boolean!
     createdAt: String!
     updatedAt: String!
     creatorId: ID!
