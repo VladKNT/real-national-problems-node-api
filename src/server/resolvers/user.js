@@ -177,14 +177,6 @@ export default {
         throw new Error(error);
       }
     },
-    //
-    // chats: async ({ id }, args, { loaders }) => {
-    //   try {
-    //     return await loaders.userProfile.load(id);
-    //   } catch (error) {
-    //     throw new Error(error);
-    //   }
-    // }
 
     chats: async ({ id }, args, { models }) => {
       try {

@@ -15,7 +15,7 @@ export default gql `
   }
   
   type Query {
-    messages(chatId: ID!): [Message!]
+    messages(chatId: ID!, offset: Int, limit: Int): [Message!]
   }
   
   type Mutation {

@@ -8,7 +8,7 @@ export default {
   Query: {
     messages: combineResolvers(
       isAuthenticated,
-      async (parent, { chatId }, { models, currentUser }) => {
+      async (parent, { chatId, offset = 0, limit = 20 }, { models, currentUser }) => {
       try {
         const { sub: userId } = currentUser;
 
@@ -18,9 +18,7 @@ export default {
           throw new Error('You don\'t have permission or chat doesn\'t exist');
         }
 
-        console.info(chat);
-
-        return await models.Message.findAll({ chatId }) ;
+        return await models.Message.findAll({ chatId, offset, limit, order: [["createdAt", "DESC"]] }) ;
       } catch (error) {
         throw new Error(error);
       }
