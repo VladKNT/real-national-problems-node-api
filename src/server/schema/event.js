@@ -35,4 +35,8 @@ export default gql `
     ): Event!
     follow(id: ID!): Event!
   }
+  
+  type Subscription {
+    eventCreated: Event!
+  }
 `;

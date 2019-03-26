@@ -18,7 +18,7 @@ export default {
           throw new Error('You don\'t have permission or chat doesn\'t exist');
         }
 
-        return await models.Message.findAll({ chatId, offset, limit, order: [["createdAt", "DESC"]] }) ;
+        return await models.Message.findAll({ chatId, offset, limit, order: [[ "createdAt", "DESC" ]] }) ;
       } catch (error) {
         throw new Error(error);
       }

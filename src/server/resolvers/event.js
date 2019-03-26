@@ -1,6 +1,7 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { isAuthenticated } from '../helpers/authorization';
 import { uploadImage } from '../helpers/imageUploader';
+import pubsub, { EVENTS } from "../subscriptions";
 import _ from 'lodash';
 
 export default {
@@ -19,7 +20,7 @@ export default {
       isAuthenticated,
       async (parent, args, { models }) => {
         try {
-          return await models.Event.findAll();
+          return await models.Event.findAll({ order:[[ "createdAt", "DESC" ]]});
         }  catch (error) {
           throw new Error(error);
         }
@@ -42,6 +43,10 @@ export default {
 
           const event = await models.Event.create(args);
           await event.setParticipants(args.participants);
+
+          pubsub.publish(EVENTS.EVENT.EVENT_CREATED, {
+            eventCreated: event
+          });
 
           return event;
         } catch (error) {
@@ -78,6 +83,12 @@ export default {
         }
       }
     )
+  },
+
+  Subscription: {
+    eventCreated: {
+      subscribe: () => pubsub.asyncIterator(EVENTS.EVENT.EVENT_CREATED)
+    }
   },
 
   Event: {
