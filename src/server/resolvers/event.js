@@ -1,4 +1,5 @@
 import { combineResolvers } from 'graphql-resolvers';
+import { withFilter } from 'apollo-server';
 import { isAuthenticated } from '../helpers/authorization';
 import { uploadImage } from '../helpers/imageUploader';
 import pubsub, { EVENTS } from "../subscriptions";
@@ -77,6 +78,12 @@ export default {
           }
 
           await event.setParticipants(participants);
+
+
+          pubsub.publish(EVENTS.EVENT.FOLLOW_EVENT, {
+            followEvent: event
+          });
+
           return event;
         } catch (error) {
           throw new Error(error);
@@ -88,6 +95,12 @@ export default {
   Subscription: {
     eventCreated: {
       subscribe: () => pubsub.asyncIterator(EVENTS.EVENT.EVENT_CREATED)
+    },
+
+    followEvent: {
+      subscribe: withFilter(() => pubsub.asyncIterator(EVENTS.EVENT.FOLLOW_EVENT), (payload, variables) => {
+        return variables.id == payload.followEvent.id;
+      }),
     }
   },
 
