@@ -60,6 +60,11 @@ const user = (sequelize, DataTypes) => {
       as: 'userEventIds',
     });
 
+    User.hasMany(models.UserMessage, {
+      foreignKey: 'userId',
+      as: 'userMessageId',
+    });
+
     User.hasMany(models.Message, {
       foreignKey: 'creatorId',
       as: 'ownChats'
@@ -83,6 +88,15 @@ const user = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       as: 'events',
       through: 'UserEvents',
+
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    });
+
+    User.belongsToMany(models.Message, {
+      foreignKey: 'userId',
+      as: 'readMessages',
+      through: 'UserMessages',
 
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'

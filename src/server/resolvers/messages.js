@@ -18,6 +18,7 @@ export default {
           throw new Error('You don\'t have permission or chat doesn\'t exist');
         }
 
+        console.info(await models.Message.findAll({ where: { chatId }, offset, limit, order: [[ "createdAt", "DESC" ]] }))
         return await models.Message.findAll({ where: { chatId }, offset, limit, order: [[ "createdAt", "DESC" ]] }) ;
       } catch (error) {
         throw new Error(error);
@@ -34,6 +35,7 @@ export default {
           args.creatorId = creatorId;
 
           const message = await models.Message.create(args);
+          await message.setReaders([creatorId]);
 
           pubsub.publish(EVENTS.MESSAGE.MESSAGE_SENT, {
             messageSent: message
@@ -95,5 +97,16 @@ export default {
         throw new Error(error);
       }
     },
+
+    read: async ({ id: messageId }, args, { models, currentUser }) => {
+      try {
+        const { sub: userId } = currentUser;
+        const read = await models.UserMessage.findOne({ where: { messageId, userId }});
+
+        return !!read;
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
   }
 }

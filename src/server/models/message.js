@@ -23,16 +23,31 @@ const message = (sequelize, DataTypes) => {
     },
   }, {});
   Message.associate = function(models) {
+    Message.hasMany(models.UserMessage, {
+      foreignKey: 'messageId',
+      as: 'userMessageId',
+    });
+
     Message.belongsTo(models.User, {
       foreignKey: 'creatorId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });
+
     Message.belongsTo(models.Chat, {
       foreignKey: 'chatId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
-    })
+    });
+
+    Message.belongsToMany(models.User, {
+      foreignKey: 'messageId',
+      as: 'readers',
+      through: 'UserMessages',
+
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    });
   };
   return Message;
 };

@@ -10,6 +10,7 @@ export default gql `
     deleted: Boolean!
     deletedForAll: Boolean!
     edited: Boolean!
+    read: Boolean!
     createdAt: String!
     updatedAt: String!
   }
