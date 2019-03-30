@@ -49,6 +49,7 @@ const server = new ApolloServer({
       loaders: {
         userProfile: new DataLoader((keys) => loaders.userProfile.batchUserProfiles(keys, models)),
         creators: new DataLoader((keys) => loaders.common.batchCreators(keys, models)),
+        readMessage: new DataLoader((keys) => loaders.message.batchReadMessages(keys, currentUser, models)),
       },
     };
   },
