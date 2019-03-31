@@ -47,6 +47,30 @@ export default {
       }
     ),
 
+    readMessages: combineResolvers(
+      isAuthenticated,
+      async (parent, { messagesId }, { models, currentUser }) => {
+        try {
+          const { sub: creatorId } = currentUser;
+
+          const messages = await models.Message.findAll({
+            where: { id: messagesId },
+            include: {
+              model: models.User,
+              as: 'readers',
+            }});
+
+          _.forEach(messages, async (message) => {
+            await message.setReaders([...message.readers, creatorId]);
+          });
+
+          return messages;
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+    ),
+
     updateMessage: combineResolvers(
       isMessageCreator,
       async (parent, args, { models }) => {

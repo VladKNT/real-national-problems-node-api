@@ -23,6 +23,7 @@ export default gql `
     sendMessage(message: String!, chatId: ID!): Message!
     updateMessage(id: ID!, message: String!): Message!
     deleteMessage(id: ID!, deletedForAll: Boolean): Boolean!
+    readMessages(messagesId: [ID]!): [Message]!
   }
   
   type Subscription {
