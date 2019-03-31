@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import { combineResolvers } from 'graphql-resolvers';
 import { isAuthenticated, isChatCreator } from '../helpers/authorization';
 
@@ -131,6 +132,26 @@ export default {
             where: { chatId: id }
           }]
         });
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
+    unreadMessages: async ({ id: chatId }, args, { models, currentUser }) => {
+      try {
+        const Op = Sequelize.Op;
+        const { sub: userId } = currentUser;
+        const unread = await models.Message.findAndCountAll({
+          where: { chatId },
+          include: [{
+            model: models.UserMessage,
+            as: 'userMessageId',
+            required: true,
+            where: { userId: { [Op.ne]: userId } }
+          }]
+        });
+
+        return unread.count;
       } catch (error) {
         throw new Error(error);
       }

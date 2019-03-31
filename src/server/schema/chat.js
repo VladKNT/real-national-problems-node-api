@@ -6,6 +6,7 @@ export default gql `
     name: String!
     description: String!
     icon: String!
+    unreadMessages: Int
     lastMessage: Message
     members: [User!]!
     private: Boolean!
