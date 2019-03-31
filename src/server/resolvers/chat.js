@@ -141,17 +141,19 @@ export default {
       try {
         const Op = Sequelize.Op;
         const { sub: userId } = currentUser;
-        const unread = await models.Message.findAndCountAll({
+
+        const allMessages = await models.Message.count({ where: { chatId }});
+        const read = await models.Message.findAndCountAll({
           where: { chatId },
           include: [{
             model: models.UserMessage,
             as: 'userMessageId',
             required: true,
-            where: { userId: { [Op.ne]: userId } }
+            where: { userId }
           }]
         });
 
-        return unread.count;
+        return allMessages - read.count;
       } catch (error) {
         throw new Error(error);
       }
