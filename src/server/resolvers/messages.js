@@ -31,13 +31,20 @@ export default {
       async (parent, args, { models, currentUser }) => {
         try {
           const { sub: creatorId } = currentUser;
+          const { chatId } = args;
           args.creatorId = creatorId;
 
           const message = await models.Message.create(args);
           await message.setReaders([creatorId]);
 
+          const chat = await models.Chat.findById(chatId);
+
           pubsub.publish(EVENTS.MESSAGE.MESSAGE_SENT, {
             messageSent: message
+          });
+
+          pubsub.publish(EVENTS.MESSAGE.UDATE_CHAT, {
+            updateChat: chat
           });
 
           return message;
@@ -109,6 +116,13 @@ export default {
       subscribe: withFilter(() => pubsub.asyncIterator(EVENTS.MESSAGE.MESSAGE_SENT), (payload, variables) => {
         return variables.chatId == payload.messageSent.chatId;
       }),
+    },
+
+    updateChat: {
+      subscribe: withFilter(() => pubsub.asyncIterator(EVENTS.MESSAGE.UDATE_CHAT), (payload, variables, { currentUser }) => {
+        console.info(payload.updateChat);
+        return true;
+      }),
     }
   },
 
@@ -132,3 +146,4 @@ export default {
     }
   }
 }
+;

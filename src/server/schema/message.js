@@ -28,5 +28,6 @@ export default gql `
   
   type Subscription {
     messageSent(chatId: ID!): Message!
+    updateChat: Chat!
   }
 `;
