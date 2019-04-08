@@ -21,7 +21,7 @@ export default {
       isAuthenticated,
       async (parent, args, { models }) => {
         try {
-          return await models.Event.findAll({ order:[[ "createdAt", "DESC" ]]});
+          return await models.Event.findAll({ order:[[ "dateStart", "DESC" ]]});
         }  catch (error) {
           throw new Error(error);
         }
